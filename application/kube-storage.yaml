@@ -37,9 +37,10 @@ metadata:
   labels:
     app: mysql
 spec:
-  type: ClusterIP
+  type: NodePort
   ports:
   - port: 51000
+    nodePort: 30002
     targetPort: 3306
   selector:
     app: mysql

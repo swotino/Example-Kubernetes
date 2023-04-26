@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo
+  labels:
+    app: demo
+spec:
+  selector:
+    matchLabels:
+      app: demo
+  template:
+    metadata:
+      labels:
+        app: demo
+    spec:
+      containers:
+      - name: demo
+        image: demo-backend:latest
+        imagePullPolicy: Never
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        env:
+        - name: MYSQL_DATABASE_HOST
+          value: "10.152.183.36"
+        - name: MYSQL_DATABASE_PORT
+          value: "51000"
+        - name: MYSQL_DATABASE_USER
+          value: "root"
+        - name: MYSQL_DATABASE_PASSWORD
+          value: "password"
+        - name: MYSQL_DATABASE_DB
+          value: "demo"
+        ports:
+        - containerPort: 10000
+          name: demo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo
+  labels:
+    app: demo
+spec:
+  type: NodePort
+  ports:
+  - port: 51001
+    nodePort: 30001
+    targetPort: 10000
+  selector:
+    app: demo

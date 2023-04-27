@@ -6,6 +6,27 @@ Example of a Kubernetes deployment for a simple web application.
 
 Creating a MySQL database with persistent storage by the application kube-storage.yaml
 
+## Backend
+
+Creating a backend application by the kube-backend.yaml.
+Backend is an application that manages the database and exposes a REST API, created in Python 3.11.3 with Flask.
+
+Kubectl needs the image container locally, so we need to build it and import into the microk8s container registry.
+
+Use the Dockerfile to build the image.
+
+```bash
+docker build -t backend:1.0 .
+docker save -o backend.tar backend:1.0
+microk8s ctr image import backend:1.0
+```
+
+Now, we can able to apply the YAML file to kubernetes.
+
+```bash
+kubectl apply -f kube-backend.yaml
+```
+
 ## Dashboard
 
 Enabbling the Kubernetes dashboard by 

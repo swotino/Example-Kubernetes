@@ -6,6 +6,58 @@ Example of a Kubernetes deployment for a simple web application.
 
 Creating a MySQL database with persistent storage by the application kube-storage.yaml
 
+## Backend
+
+Creating a backend application by the kube-backend.yaml.
+Backend is an application that manages the database and exposes a REST API, created in Python 3.11.3 with Flask.
+
+Kubectl needs the image container locally, so we need to build it and import into the microk8s container registry.
+
+Use the Dockerfile to build the image.
+
+```bash
+docker build -t backend:1.0 .
+docker save -o backend.tar backend:1.0
+microk8s ctr image import backend:1.0
+```
+
+Now, we can able to apply the YAML file to kubernetes.
+
+```bash
+kubectl apply -f kube-backend.yaml
+```
+
+## Multinode
+
+With microk8s we can create a multinode cluster, but we need to enable the microk8s on all nodes and join them.
+
+On each node (master included), we need to add the IP and the hostname of the other nodes in the file: /etc/hosts
+
+```bash
+sudo nano /etc/hosts
+```
+
+Adding in the end
+    
+```bash
+<ip> <hostname>
+10.10.0.100 master
+10.10.0.101 node
+```
+Now, on master node, we ask microk8s how to join the cluster.
+
+```bash
+microk8s add-node
+```
+
+The command will return a command to run on the other nodes to join the cluster.
+
+On the other nodes, we need to run the command returned by the master node.
+
+```bash
+microk8s join <ip>:<port>/<token>/<token>
+```
+
 ## Dashboard
 
 Enabbling the Kubernetes dashboard by 

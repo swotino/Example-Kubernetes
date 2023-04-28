@@ -16,15 +16,32 @@ Kubectl needs the image container locally, so we need to build it and import int
 Use the Dockerfile to build the image.
 
 ```bash
-docker build -t backend:1.0 .
-docker save -o backend.tar backend:1.0
-microk8s ctr image import backend:1.0
+docker build -t demo-backend:1.0 .
+docker save -o demo-backend.tar demo-backend:1.0
+microk8s ctr image import demo-backend:1.0
 ```
 
 Now, we can able to apply the YAML file to kubernetes.
 
 ```bash
 kubectl apply -f kube-backend.yaml
+```
+
+## Frontend
+
+Creating a frontend application by the kube-frontend.yaml.
+Frontend is an application that consumes the REST API exposed by the backend, created in NodeJS with express.
+
+```bash
+docker build -t demo-frontend:1.0 .
+docker save -o demo-frontend.tar demo-frontend:1.0
+microk8s ctr image import demo-frontend:1.0
+```
+
+Now, we can able to apply the YAML file to kubernetes.
+
+```bash 
+kubectl apply -f kube-frontend.yaml
 ```
 
 ## Multinode

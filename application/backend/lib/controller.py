@@ -16,12 +16,15 @@ class Controller(Resource):
     def post(self):
         if not Database.instance:
             return {"error": "Database not connected"}
-
-        json = request.get_json()
-        cursor = Database.instance.get_db().cursor()
-        cursor.execute(
-            "INSERT INTO accounts (firstName, lastName) VALUES (%s, %s)",
-            (json["firstName"], json["lastName"]),
-        )
-        Database.instance.get_db().commit()
-        return {"message": "Hello, World!"}
+        
+        try:
+            json = request.get_json()
+            cursor = Database.instance.get_db().cursor()
+            cursor.execute(
+                "INSERT INTO accounts (firstName, lastName) VALUES (%s, %s)",
+                (json["firstName"], json["lastName"]),
+            )
+            Database.instance.get_db().commit()
+            return {"message": "Account created successfully"}
+        except Exception as e:
+            return {"error": str(e) }

@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: demo
+  name: backend
   labels:
-    app: demo
+    app: backend
 spec:
   selector:
     matchLabels:
-      app: demo
+      app: backend
   template:
     metadata:
       labels:
-        app: demo
+        app: backend
     spec:
       containers:
-      - name: demo
+      - name: backend
         image: demo-backend:latest
         imagePullPolicy: Never
         resources:
@@ -37,14 +37,14 @@ spec:
           value: "demo"
         ports:
         - containerPort: 10000
-          name: demo
+          name: backend
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: demo
+  name: backend
   labels:
-    app: demo
+    app: backend
 spec:
   type: NodePort
   ports:
@@ -52,4 +52,4 @@ spec:
     nodePort: 30001
     targetPort: 10000
   selector:
-    app: demo
+    app: backend

@@ -13,10 +13,12 @@ spec:
       labels:
         app: frontend
     spec:
+      imagePullSecrets:
+      - name: private-registry
       containers:
       - name: frontend
-        image: demo-frontend:latest
-        imagePullPolicy: Never
+        image: 10.10.0.200:8082/demo-frontend:latest
+        imagePullPolicy: Always
         resources:
           requests:
             memory: "64Mi"

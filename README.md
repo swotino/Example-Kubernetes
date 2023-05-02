@@ -79,13 +79,14 @@ microk8s join <ip>:<port>/<token>/<token>
 
 We can create a private registry to store our images. To do this we can use Sonatype Nexus 3.
 
-Installed Nexus 3 (check 'registry/setup.sh' file for more details), you have to configure it in five steps:
+Installed Nexus 3 (check 'registry/setup.sh' file for more details), you have to configure it by the following steps:
 
 * A blob store: to store the image files
 * Hosted Repository: to store the images
 * Proxy Repository: to download the images from the public registry
 * Group Repository: to group the hosted and proxy repositories
 * Docker configuration: to enable the docker registry
+* Kubernetes configuration: to enable the kubernetes registry and change the yaml file
 
 ### Blob Store
 
@@ -163,6 +164,79 @@ To pull the images from the registry, we need to login in the registry.
 ```bash
 docker pull <host>:8082/<image>:<tag> // by group repository
 docker pull <host>:8083/<image>:<tag> // by hosted repository
+```
+
+### Kubernetes
+
+Now, we need to allow kubernetes to access at the private registry.
+We adopted 'microk8s' as kubernetes distribution, so we need to add the configuration in the file: /var/snap/microk8s/current/args/<host>:<port>/hosts.toml
+
+The host and port are the same used in the docker configuration.
+
+```bash
+sudo mkdir -p /var/snap/microk8s/current/args/<host>:<port>/
+sudo touch /var/snap/microk8s/current/args/<host>:<port>/hosts.toml
+```
+
+and add the insecure-registries:
+
+```bash
+server = "<host>:<port>"
+
+[host."http://<host>:<port>"]
+capabilities = ["pull", "resolve"]
+```
+
+Now, we can restart the microk8s service.
+
+```bash
+microk8s stop
+microk8s start
+```
+
+#### YAML File
+
+To use the private registry, we need to create the credentials in kubernetes based on the docker credentials (check 'application/kube-secret.yaml' file for more details).
+The credentials data are encoded in base64, so we need to encode the data before to add in the yaml file.
+
+```bash
+cat ~/.docker/config.json | base64
+```
+
+Now, we can create the secret in kubernetes.
+
+```bash
+kubectl apply -f kube-secret.yaml
+```
+
+The next step is change our deployment yaml file to pull the image from the private registry.
+The meaning of the changes are:
+* imagePullSecrets: to use the secret created before
+
+```yaml
+...
+spec:
+    template:
+        ...
+        spec:
+            ...
+            imagePullSecrets:
+            - name: <secret-name>
+```
+
+* image: to use the private registry
+
+```yaml
+...
+spec:
+    template:
+        ...
+        spec:
+            ...
+            containers:
+            - name: <container-name>
+              image: <host>:<port>/<image>:<tag>
+              imagePullPolicy: Always
 ```
 
 ## Dashboard

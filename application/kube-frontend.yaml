@@ -32,7 +32,7 @@ spec:
         - name: BACKEND_HOST
           value: "10.10.0.100"
         - name: BACKEND_PORT
-          value: "30001"
+          value: "80"
         ports:
         - containerPort: 5000
           name: frontend

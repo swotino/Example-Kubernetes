@@ -13,10 +13,12 @@ spec:
       labels:
         app: backend
     spec:
+      imagePullSecrets:
+      - name: private-registry
       containers:
       - name: backend
-        image: demo-backend:latest
-        imagePullPolicy: Never
+        image: 10.10.0.200:8082/demo-backend:latest
+        imagePullPolicy: Always
         resources:
           requests:
             memory: "64Mi"
@@ -26,7 +28,7 @@ spec:
             cpu: "500m"
         env:
         - name: MYSQL_DATABASE_HOST
-          value: "10.152.183.89"
+          value: "10.152.183.78"
         - name: MYSQL_DATABASE_PORT
           value: "51000"
         - name: MYSQL_DATABASE_USER
@@ -34,7 +36,7 @@ spec:
         - name: MYSQL_DATABASE_PASSWORD
           value: "password"
         - name: MYSQL_DATABASE_DB
-          value: "demo"
+          value: "simple"
         ports:
         - containerPort: 10000
           name: backend

@@ -35,7 +35,7 @@ function refresh_table () {
         }
     }
 
-    fetch(`http://${BACKEND_HOST}:${BACKEND_PORT}/accounts`)
+    fetch(`http://${BACKEND_HOST}:${BACKEND_PORT}/api/accounts`)
         .catch(error => refresh(null, error))
         .then(response => {
             if(response.status != 200) {
@@ -55,7 +55,7 @@ function submit_form (event) {
         lastName: form.elements['lastName'].value
     };
 
-    fetch(`http://${BACKEND_HOST}:${BACKEND_PORT}/accounts`, { method: 'POST', headers: { 'Content-type': 'application/json' }, body: JSON.stringify(data) })
+    fetch(`http://${BACKEND_HOST}:${BACKEND_PORT}/api/accounts`, { method: 'POST', headers: { 'Content-type': 'application/json' }, body: JSON.stringify(data) })
         .catch(error => console.log(error))
         .then(response => {
             console.log(response);

@@ -2,6 +2,12 @@
 
 Example of a Kubernetes deployment for a simple web application.
 
+##### Fixes
+
+* Added a docker container for the database, in order to define the database schema and the initial data.
+
+* Changed the backend and the frontend applications to use the private registry.
+
 ## Storage
 
 Creating a MySQL database with persistent storage by the application kube-storage.yaml
@@ -238,6 +244,17 @@ spec:
               image: <host>:<port>/<image>:<tag>
               imagePullPolicy: Always
 ```
+
+## Ingress
+
+The ingress is a kubernetes resource to expose the services to outside the cluster.
+We adopted 'nginx-ingress' as ingress controller, so we need to enable it by the following command:
+
+```bash
+microk8s enable ingress
+```
+
+Now, we can create the ingress resource to expose the service (check 'application/kube-ingress.yaml' file for more details).
 
 ## Dashboard
 

@@ -8,3 +8,4 @@ black==23.1.0
 virtualenv==20.21.0
 python-dotenv==1.0.0
 waitress==2.1.2
+cryptography==36.0.1

@@ -13,9 +13,12 @@ spec:
       labels:
         app: mysql
     spec:
+      imagePullSecrets:
+      - name: private-registry
       containers:
       - name: mysql
-        image: mysql:8.0.33
+        image: 10.10.0.200:8082/demo-database:latest
+        imagePullPolicy: Always
         resources:
           requests:
             memory: "64Mi"

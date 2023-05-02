@@ -8,6 +8,7 @@ from waitress import serve
 from dotenv import load_dotenv
 
 from lib.controller import Controller
+from lib.info import Info
 from lib.constants import Database
 
 # Load environment variables
@@ -39,6 +40,7 @@ except Exception as e:
 # Configure the controllers
 api = Api(app)
 api.add_resource(Controller, "/accounts")
+api.add_resource(Info, "/info")
 
 # Run the app
 if __name__ == "__main__":

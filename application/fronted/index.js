@@ -1,4 +1,5 @@
 require('dotenv').config();
+const nuname = require('nuname');
 const express = require('express');
 const fs = require('fs');
 
@@ -11,7 +12,8 @@ app.get('/', (req, res) => {
 
 const host = process.env.BACKEND_HOST;
 const port = process.env.BACKEND_PORT;
-fs.writeFile(__dirname + '/public/config.js', `const BACKEND_HOST = '${host}'; const BACKEND_PORT = '${port}';`, (err) => { if(err) console.log(err); });
+fs.writeFile(__dirname + '/public/config.js', 
+  `const BACKEND_HOST = '${host}'; const BACKEND_PORT = '${port}'; const NODE_NAME = '${nuname('n')}'`, (err) => { if(err) console.log(err); });
 
 const app_port = process.env.APP_PORT || 3000;
 app.listen(app_port, () => console.log(`Server running on port ${app_port}.`));

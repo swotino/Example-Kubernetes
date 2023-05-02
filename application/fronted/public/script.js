@@ -67,8 +67,14 @@ function submit_form (event) {
         });
 }
 
+function show_node_name () {
+    const small = document.getElementById('node-name');
+    small.innerHTML = NODE_NAME;
+}
+
 const form = document.getElementById('myform');
 form.addEventListener('submit', submit_form);
 
+show_node_name();
 refresh_table();
 setTimeout(refresh_table, 10000);

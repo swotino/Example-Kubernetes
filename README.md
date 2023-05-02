@@ -75,6 +75,96 @@ On the other nodes, we need to run the command returned by the master node.
 microk8s join <ip>:<port>/<token>/<token>
 ```
 
+## Registry
+
+We can create a private registry to store our images. To do this we can use Sonatype Nexus 3.
+
+Installed Nexus 3 (check 'registry/setup.sh' file for more details), you have to configure it in five steps:
+
+* A blob store: to store the image files
+* Hosted Repository: to store the images
+* Proxy Repository: to download the images from the public registry
+* Group Repository: to group the hosted and proxy repositories
+* Docker configuration: to enable the docker registry
+
+### Blob Store
+
+To create a blob store, go to the menu: Settings -> Repositories -> Blob Stores and click on the button 'Create blob store'.
+Select the type 'File' and set the path to store the images.
+
+### Hosted Repository
+
+To create a hosted repository, go to the menu: Settings -> Repositories -> Repositories and click on the button 'Create repository'.
+
+Select the type 'docker (hosted)' and set the name and the blob store created before. 
+
+* Enable the option 'HTTP' and set the port to 8083.
+* Enable the option 'Enable Docker V1 API' and set the port to 8083.
+
+### Proxy Repository
+
+To create a proxy repository, go to the menu: Settings -> Repositories -> Repositories and click on the button 'Create repository'.
+
+Select the type 'docker (proxy)' and set the name and the blob store created before.
+
+Type the URL of the public registry to proxy (e.g. https://registry-1.docker.io) and in Docker Index select 'Use Docker Hub'.
+
+### Group Repository
+
+To create a group repository, go to the menu: Settings -> Repositories -> Repositories and click on the button 'Create repository'.
+
+Select the type 'docker (group)' and set the name and the blob store created before.
+
+* Enable the option 'HTTP' and set the port to 8082.
+* Add the hosted and proxy repositories created before.
+
+### Docker
+
+To allow docker to use the private registry, we need to add the configuration in the file: /etc/docker/daemon.json (the file is created if not exists)
+
+```bash
+sudo nano /etc/docker/daemon.json
+```
+
+and add the insecure-registries:
+
+```bash
+{
+    "insecure-registries" : ["<host>:8082", "<host>:8083"]
+}
+```
+
+Now, we can restart the docker service.
+
+```bash
+sudo systemctl restart docker
+```
+
+#### Docker Usage
+
+To use the private registry, we need to login in the registry.
+
+```bash
+docker login -u <user> -p <password> <host>:8082
+docker login -u <user> -p <password> <host>:8083
+```
+
+After login, we can push the images to the registry.
+
+```bash
+docker tag <image>:<tag> <host>:8083/<image>:<tag>
+docker push <host>:8083/<image>:<tag> // push to hosted repository directly
+```
+
+<b>NOTE: Only for nexus PRO account, we can use the group repository to push the images.</b>
+
+To pull the images from the registry, we need to login in the registry.
+
+```bash
+docker pull <host>:8082/<image>:<tag> // by group repository
+docker pull <host>:8083/<image>:<tag> // by hosted repository
+```
+
 ## Dashboard
 
 Enabbling the Kubernetes dashboard by 

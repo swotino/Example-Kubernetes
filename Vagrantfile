@@ -23,4 +23,16 @@ Vagrant.configure("2") do |config|
             vb.cpus = "2"
         end
     end
+
+    config.vm.define "registry" do |registry|
+        registry.vm.box = "bento/ubuntu-20.04-arm64"
+        registry.vm.box_version = "202301.20.0"
+        registry.vm.hostname = "registry"
+        registry.vm.network "private_network", ip: "10.10.0.200"
+        registry.vm.provision "shell", path: "registry/setup.sh"
+        registry.vm.provider "parallels" do |vb|
+            vb.memory = "2048"
+            vb.cpus = "2"
+        end
+    end
 end

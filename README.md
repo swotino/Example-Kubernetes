@@ -9,3 +9,5 @@ The application has different branches:
 * application: setup a second pod to manage the storage pod
 * multinode: setup the cluster on different nodes
 * frontend: create a forntend web application to use the backend API
+* registry: setup a private docker registry
+* ingress: setup an ingress controller to manage the frontend and the backend

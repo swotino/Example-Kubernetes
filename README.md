@@ -180,8 +180,8 @@ We adopted 'microk8s' as kubernetes distribution, so we need to add the configur
 The host and port are the same used in the docker configuration.
 
 ```bash
-sudo mkdir -p /var/snap/microk8s/current/args/<host>:<port>/
-sudo touch /var/snap/microk8s/current/args/<host>:<port>/hosts.toml
+sudo mkdir -p /var/snap/microk8s/current/args/certs.d/<host>:<port>/
+sudo touch /var/snap/microk8s/current/args/certs.d/<host>:<port>/hosts.toml
 ```
 
 and add the insecure-registries:
